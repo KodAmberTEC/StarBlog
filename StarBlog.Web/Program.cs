@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Nacos.AspNetCore.V2;
 using RobotsTxt;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using StarBlog.Contrib.SiteMessage;
@@ -10,6 +11,8 @@ using StarBlog.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseNacosConfig("NacosConfig");
+
 var mvcBuilder = builder.Services.AddControllersWithViews(
     options => { options.Filters.Add<ResponseWrapperFilter>(); }
 );
@@ -17,6 +20,9 @@ var mvcBuilder = builder.Services.AddControllersWithViews(
 if (builder.Environment.IsDevelopment()) {
     mvcBuilder.AddRazorRuntimeCompilation();
 }
+
+// nacos 服务发现
+builder.Services.AddNacosAspNet(builder.Configuration);
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddFreeSql(builder.Configuration);
